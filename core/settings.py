@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-TMDB_API_KEY = 'REMOVED'
+TMDB_API_KEY = ''
 # Model de usuário customizado
 AUTH_USER_MODEL = 'users.User'
 
