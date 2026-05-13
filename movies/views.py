@@ -44,11 +44,11 @@ def marcar_filme(request, tmdb_id):
         'language': 'pt-BR'
     }).json()
     movie, _ = Movie.objects.get_or_create(tmdb_id=tmdb_id, defaults={
-        'titulo': filme_data('title', ''),
+        'title': filme_data.get('title', ''),
         'capa': f"https://image.tmdb.org/t/p/w500{filme_data.get('poster_path', '')}",
         'sinopse': filme_data.get('overview', ''),
         'ano': int(filme_data.get('release_date', '0000-00-00')[:4]) if filme_data.get('release_date') else None,
-        'generos': [g['name'] for g in filme_data.get('genres', [])]
+        'genero': [g['name'] for g in filme_data.get('genres', [])]
     })
     user_movie, created = UserMovie.objects.get_or_create(user=request.user, movie=movie, defaults={
         'status': dados.get('status'),
@@ -60,6 +60,6 @@ def marcar_filme(request, tmdb_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def meus_filmes(request):
-    filmmes = UserMovie.objects.filter(user=request.user).select_related('movie')
+    filmes = UserMovie.objects.filter(user=request.user).select_related('movie')
     serializer = UserMovieSerializer(filmes, many=True)
     return Response(serializer.data)

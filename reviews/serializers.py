@@ -9,5 +9,6 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'user', 'texto', 'nota', 'criado_em', 'likes_count']
-        def get_likes_count(self, obj):
-            return obj.likes.count()
+
+    def get_likes_count(self, obj):
+        return obj.like_set.count()
