@@ -16,14 +16,12 @@ def buscar_filmes(request):
     query = request.GET.get('q', '')
     if not query:
         return Response({'erro': 'Parâmetro q é obrigatório'}, status=status.HTTP_400_BAD_REQUEST)
-
     response = requests.get(f"{TMDB_BASE}/search/movie", params={
         'api_key': settings.TMDB_API_KEY,
         'query': query,
         'language': 'pt-BR'
     })
     return Response(response.json())
-
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -54,12 +52,21 @@ def marcar_filme(request, tmdb_id):
         'status': dados.get('status'),
         'nota': dados.get('nota')
     })
-
     serializer = UserMovieSerializer(user_movie)
     return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def meus_filmes(request):
     filmes = UserMovie.objects.filter(user=request.user).select_related('movie')
     serializer = UserMovieSerializer(filmes, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def filmes_populares(request):
+    response = requests.get(f'{TMDB_BASE}/movie/popular', params={
+        'api_key': settings.TMDB_API_KEY,
+        'language': 'pt-BR'
+    })
+    return Response(response.json())

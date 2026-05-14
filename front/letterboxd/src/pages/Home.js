@@ -1,4 +1,4 @@
-import { buscarFilmes } from '../services/api.js'
+import { buscarFilmes, apiFetch } from '../services/api.js'
 import { navigate } from '../main.js'
 import { renderCardFilme } from '../components/CardFilme.js'
 
@@ -23,16 +23,13 @@ export async function renderHome(container) {
     `
 
     const grid = document.getElementById('filmes-grid')
-    const q = query || 'popular'
-
     let filmes = []
 
     if (query) {
         const data = await buscarFilmes(query)
         filmes = data.results || []
     } else {
-        const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=REMOVED&language=pt-BR`)
-        const data = await res.json()
+        const data = await apiFetch('/filmes/populares/')
         filmes = data.results || []
     }
 
